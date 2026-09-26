@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "legal-ir-prototype"
+version = "0.1.0"
+description = "Vietnamese legal hybrid retrieval prototype and Qdrant ingestion"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "bm25s==0.3.11",
+  "numpy>=1.26,<3",
+  "PyYAML>=6,<7",
+  "qdrant-client==1.19.1",
+  "sentence-transformers==5.1.2",
+  "torch>=2.4,<3",
+  "transformers==4.57.6",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+]
+ingestion = [
+  "scipy>=1.11,<2",
+]
+
+[project.scripts]
+legal-ir-smoke = "legal_ir_prototype.cli:main"
+legal-ir-ingest = "legal_ir_prototype.ingestion.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+  "integration: requires a running hybrid Qdrant collection and research index",
+]

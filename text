@@ -1,0 +1,7 @@
+export LEGAL_RAG_AWS_REGION="ap-southeast-1"
+export LEGAL_RAG_SNAPSHOT_BUCKET="[legal-rag-qdrant-snapshots-765951922955-ap-southeast-1](https://ap-southeast-1.console.aws.amazon.com/s3/buckets/legal-rag-qdrant-snapshots-765951922955-ap-southeast-1?region=ap-southeast-1)"
+export LEGAL_RAG_SNAPSHOT_PREFIX="legal-ir/qdrant/legal_long_hybrid_v1"
+
+export LEGAL_RAG_SNAPSHOT_FILE="legal_long_hybrid_v1-8400451714344660-2026-09-25-16-20-31.snapshot"
+export LEGAL_RAG_SNAPSHOT_SHA256="e89754a37c0196a4f81e8ba06b68ced122955729ee53749b3a19600bdcf7cbd5"
+export LEGAL_RAG_SNAPSHOT_HOST_PATH="/var/lib/qdrant/snapshots/${LEGAL_RAG_SNAPSHOT_FILE}"

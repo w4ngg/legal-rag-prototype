@@ -1,0 +1,25 @@
+# Offline/build configuration. The referenced runtime YAML controls model pins,
+# device/dtype, Qdrant endpoint, collection, and named vectors.
+runtime_config: runtime.yaml
+
+chunking:
+  input_pattern: context_*.json
+  short_max_characters: 450
+  long_max_characters: 2000
+  long_overlap_short_chunks: 1
+  include_document_title: true
+  title_max_characters: 300
+
+index:
+  bm25_method: lucene
+  bm25_k1: 1.2
+  bm25_b: 0.75
+  qdrant_hnsw_m: 32
+  qdrant_hnsw_ef_construction: 200
+
+upload:
+  batch_size: 256
+  max_retries: 5
+  disable_indexing_during_upload: true
+  optimizer_indexing_threshold_kb: 10000
+  optimizer_timeout_seconds: 3600
