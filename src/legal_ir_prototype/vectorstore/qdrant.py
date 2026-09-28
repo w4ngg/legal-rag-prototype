@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
+from collections.abc import Callable
+from typing import Any, Mapping, Sequence, TypeVar
 
 from ..core.config import QdrantConfig
 from ..domain.models import LegalChunk, RetrievalHit, SparseQueryVector
+from .errors import QdrantUnavailableError
 
 
 _CORE_PAYLOAD_FIELDS = {
@@ -12,6 +14,7 @@ _CORE_PAYLOAD_FIELDS = {
     "passage",
     "retrieval_text",
 }
+_T = TypeVar("_T")
 
 
 def _model_dump(value: Any) -> dict[str, Any]:
@@ -49,12 +52,30 @@ class QdrantVectorStore:
             )
         return self._client
 
+    @staticmethod
+    def _call(operation: str, callback: Callable[[], _T]) -> _T:
+        """Normalize Qdrant transport/service failures at the adapter boundary.
+
+        Schema and payload validation deliberately happen outside this wrapper so
+        programming/data-contract errors still surface as internal errors instead
+        of being mislabeled as transient dependency failures.
+        """
+
+        try:
+            return callback()
+        except QdrantUnavailableError:
+            raise
+        except Exception as exc:
+            raise QdrantUnavailableError(operation) from exc
+
     def validate_schema(self, *, expected_dense_dimension: int) -> None:
         if self._schema_validated:
             return
-        info = _model_dump(
-            self._get_client().get_collection(self.config.collection)
+        collection = self._call(
+            "get_collection",
+            lambda: self._get_client().get_collection(self.config.collection),
         )
+        info = _model_dump(collection)
         params = info.get("config", {}).get("params", {})
         vectors = params.get("vectors", {})
         dense = vectors.get(self.config.dense_vector_name)
@@ -80,6 +101,18 @@ class QdrantVectorStore:
                 f"{self.config.sparse_vector_name!r}"
             )
         self._schema_validated = True
+
+    @property
+    def is_schema_validated(self) -> bool:
+        return self._schema_validated
+
+    def check_connection(self) -> None:
+        """Raise when the configured collection cannot be reached."""
+
+        self._call(
+            "get_collection",
+            lambda: self._get_client().get_collection(self.config.collection),
+        )
 
     @staticmethod
     def _chunk_from_point(point: Any) -> LegalChunk:
@@ -136,16 +169,19 @@ class QdrantVectorStore:
             return []
         from qdrant_client import models
 
-        response = self._get_client().query_points(
-            collection_name=self.config.collection,
-            query=query,
-            using=using,
-            limit=top_k,
-            with_payload=True,
-            with_vectors=False,
-            search_params=models.SearchParams(
-                exact=self.config.exact,
-                hnsw_ef=self.config.hnsw_ef,
+        response = self._call(
+            f"query_points:{channel}",
+            lambda: self._get_client().query_points(
+                collection_name=self.config.collection,
+                query=query,
+                using=using,
+                limit=top_k,
+                with_payload=True,
+                with_vectors=False,
+                search_params=models.SearchParams(
+                    exact=self.config.exact,
+                    hnsw_ef=self.config.hnsw_ef,
+                ),
             ),
         )
         points: Sequence[Any] = getattr(response, "points", response)

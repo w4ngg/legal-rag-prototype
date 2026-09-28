@@ -41,6 +41,15 @@ class Reranker:
         )
         return self._model
 
+    @property
+    def is_loaded(self) -> bool:
+        return self._model is not None
+
+    def load(self) -> None:
+        """Load the pinned cross-encoder without scoring a pair."""
+
+        self._load()
+
     def score(self, query: str, chunks: Sequence[LegalChunk]) -> list[float]:
         normalized_query = query.strip()
         if not normalized_query:

@@ -5,3 +5,10 @@ export LEGAL_RAG_SNAPSHOT_PREFIX="legal-ir/qdrant/legal_long_hybrid_v1"
 export LEGAL_RAG_SNAPSHOT_FILE="legal_long_hybrid_v1-8400451714344660-2026-09-25-16-20-31.snapshot"
 export LEGAL_RAG_SNAPSHOT_SHA256="e89754a37c0196a4f81e8ba06b68ced122955729ee53749b3a19600bdcf7cbd5"
 export LEGAL_RAG_SNAPSHOT_HOST_PATH="/var/lib/qdrant/snapshots/${LEGAL_RAG_SNAPSHOT_FILE}"
+
+
+aws support add-communication-to-case \
+    --case-id "179042539800426" \
+    --communication-body "Hello AWS support. I am a senior undergraduate who trying to building a Legal RAG pipeline prototype (Machine Learning/ AI / Natural Language Processing models). I am actively developing this project and require GPU accelaration to inference model. Probably a request for 8 vCPUs is too much since I am a new user, however, can your team increase it to 4 vCPU so I could atleast run a g4dn.xlarge instance. Thank you for your support" \
+    --profile "$AWS_PROFILE" \
+    --region "$AWS_REGION"

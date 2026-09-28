@@ -8,4 +8,4 @@ build/
 *.egg-info/
 artifacts/
 huong_dan_aws.md
-
+.env.*

@@ -6,8 +6,9 @@ retrieval semantics, deduplicates the lane union, attaches weighted-RRF
 provenance, and reranks every retained chunk with the fine-tuned cross-encoder.
 
 It intentionally contains no training, mining, notebooks, offline evaluation,
-QA generation, or experiment code. Offline production ingestion is isolated
-from online inference under `legal_ir_prototype.ingestion`.
+or experiment code. Grounded QA is implemented as an inference-only layer over
+retrieval. Offline production ingestion is isolated from online inference under
+`legal_ir_prototype.ingestion`.
 
 ## Package layout
 
@@ -19,6 +20,9 @@ src/legal_ir_prototype/
 ├── vectorstore/    # Qdrant adapter and payload/schema validation
 ├── fusion/         # weighted-RRF candidate fusion
 ├── services/       # retrieval use-case orchestration
+├── rag/            # context, prompts, citations, evidence gates, orchestration
+├── llm/            # fake and OpenAI-compatible structured-output clients
+├── api/            # FastAPI routes, runtime ownership and Prometheus metrics
 ├── ingestion/      # raw -> long chunks -> direct hybrid Qdrant + snapshots
 └── cli.py          # command-line smoke entry point
 ```
@@ -68,6 +72,17 @@ available so existing consumers do not break during the refactor.
 There is deliberately **no document MaxP output**, sigmoid confidence
 conversion, or fusion of a MaxP reranker score with a MaxP retrieval score.
 
+After retrieval, `RAGService.answer(query)` builds a bounded citable context,
+calls the configured structured-output LLM, resolves every citation ID against
+the server-owned context map, and applies deterministic evidence gates. Unknown
+or missing citations never reach the public answer. Empty context, failed
+citation validation, or an LLM `insufficient_evidence` decision returns a safe
+abstention instead.
+
+Score-based evidence thresholds are optional and disabled until calibrated on a
+validation set. Raw reranker logits and LLM-reported confidence are not treated
+as probabilities.
+
 The detailed correspondence to the research source is in
 [`docs/research_inference_audit.md`](docs/research_inference_audit.md).
 
@@ -97,6 +112,8 @@ live in this file; none are embedded in implementation code.
 
 ## CLI smoke test
 
+Retrieval only:
+
 ```bash
 legal-ir-smoke \
   --config configs/runtime.yaml \
@@ -106,6 +123,61 @@ legal-ir-smoke \
 
 `--limit` only limits displayed results. It does not change lane retrieval,
 fusion, or reranking.
+
+End-to-end grounded RAG (the YAML must include an `llm` section):
+
+```bash
+export LEGAL_RAG_LLM_API_KEY='replace-with-provider-key'
+
+legal-rag-smoke \
+  --config configs/runtime.yaml \
+  --query 'Người khiếu nại có quyền và nghĩa vụ gì?' \
+  --show-context
+```
+
+With `llm.provider: fake`, the same command exercises the complete local
+retrieval/context/citation path without making an external LLM request.
+`--show-context` is an opt-in smoke/debug flag that adds selected and excluded
+sources, the rendered context, token estimate, and exact system/user prompts to
+the JSON output. Omit it when evidence text must not be printed or logged.
+
+## FastAPI service
+
+Start one API process (one process owns one dense model and one reranker):
+
+```bash
+export LEGAL_RAG_CONFIG="$PWD/configs/runtime.yaml"
+export LEGAL_RAG_LLM_API_KEY='replace-with-provider-key'
+legal-rag-api --host 0.0.0.0 --port 8000 --require-cuda
+```
+
+The HTTP contract is:
+
+- `POST /v1/chat`: public grounded RAG answer with validated citations.
+- `GET /health`: lightweight process liveness; never contacts a dependency.
+- `GET /ready`: model, Qdrant, optional CUDA and LLM readiness; returns 503 when
+  any required dependency is unavailable.
+- `GET /metrics`: Prometheus exposition format.
+- `GET /version`: deployed models, revisions, collection and schema identity.
+- `POST /v1/retrieve`: raw internal retrieval diagnostics.
+
+Raw retrieval evidence is disabled by default. Enable it only on a private
+network and require an internal key:
+
+```bash
+export LEGAL_RAG_ENABLE_RETRIEVE=true
+export LEGAL_RAG_INTERNAL_API_KEY='generate-a-long-random-secret'
+
+curl -sS http://127.0.0.1:8000/v1/retrieve \
+  -H 'Content-Type: application/json' \
+  -H "X-Internal-API-Key: $LEGAL_RAG_INTERNAL_API_KEY" \
+  -d '{"query":"sa thải trái pháp luật","top_k":5}'
+```
+
+For `/v1/chat`, the optional inbound `X-Request-ID` is echoed in the response;
+otherwise the service creates one. `LEGAL_RAG_MAX_CONCURRENT_INFERENCE`
+defaults to `1` to avoid concurrent GPU memory spikes. Run a single Uvicorn
+worker per GPU because additional workers duplicate both models in VRAM.
 
 ## Tests
 

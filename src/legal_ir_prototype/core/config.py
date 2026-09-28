@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -47,6 +48,15 @@ def _positive_int(value: Any, name: str) -> int:
     return result
 
 
+def _non_negative_int(value: Any, name: str) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be a non-negative integer")
+    result = int(value)
+    if result < 0:
+        raise ValueError(f"{name} must be a non-negative integer")
+    return result
+
+
 def _revision(value: Any, name: str) -> str:
     revision = _text(value, name)
     if re.fullmatch(r"[0-9a-fA-F]{40}", revision) is None:
@@ -58,6 +68,15 @@ def _non_negative(value: Any, name: str) -> float:
     result = float(value)
     if result < 0:
         raise ValueError(f"{name} must be non-negative")
+    return result
+
+
+def _optional_finite_float(value: Any, name: str) -> float | None:
+    if value is None:
+        return None
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"{name} must be finite or null")
     return result
 
 
@@ -340,6 +359,208 @@ class RerankerConfig:
 
 
 @dataclass(frozen=True, slots=True)
+class LLMConfig:
+    provider: str
+    model: str
+    base_url: str | None
+    api_key_env: str | None
+    timeout_seconds: float
+    max_retries: int
+    temperature: float
+    max_output_tokens: int
+    structured_output_mode: str
+
+    @classmethod
+    def from_mapping(cls, raw: Mapping[str, Any]) -> "LLMConfig":
+        values = _mapping(raw, "llm")
+        _reject_unknown(
+            values,
+            {
+                "provider",
+                "model",
+                "base_url",
+                "api_key_env",
+                "timeout_seconds",
+                "max_retries",
+                "temperature",
+                "max_output_tokens",
+                "structured_output_mode",
+            },
+            "llm",
+        )
+        provider = _text(values.get("provider"), "llm.provider")
+        if provider not in {"openai_compatible", "fake"}:
+            raise ValueError(f"unsupported llm.provider: {provider}")
+        base_url_value = values.get("base_url")
+        base_url = (
+            None
+            if base_url_value in {None, ""}
+            else _text(base_url_value, "llm.base_url").rstrip("/")
+        )
+        if provider == "openai_compatible" and base_url is None:
+            raise ValueError("llm.base_url is required for openai_compatible")
+        api_key_env_value = values.get("api_key_env")
+        api_key_env = (
+            None
+            if api_key_env_value in {None, ""}
+            else _text(api_key_env_value, "llm.api_key_env")
+        )
+        timeout_seconds = float(values.get("timeout_seconds"))
+        if timeout_seconds <= 0:
+            raise ValueError("llm.timeout_seconds must be positive")
+        temperature = float(values.get("temperature"))
+        if temperature < 0:
+            raise ValueError("llm.temperature must be non-negative")
+        structured_output_mode = _text(
+            values.get("structured_output_mode"),
+            "llm.structured_output_mode",
+        )
+        if structured_output_mode not in {"json_schema", "json_object"}:
+            raise ValueError(
+                "llm.structured_output_mode must be json_schema or json_object"
+            )
+        return cls(
+            provider=provider,
+            model=_text(values.get("model"), "llm.model"),
+            base_url=base_url,
+            api_key_env=api_key_env,
+            timeout_seconds=timeout_seconds,
+            max_retries=_non_negative_int(
+                values.get("max_retries"),
+                "llm.max_retries",
+            ),
+            temperature=temperature,
+            max_output_tokens=_positive_int(
+                values.get("max_output_tokens"),
+                "llm.max_output_tokens",
+            ),
+            structured_output_mode=structured_output_mode,
+        )
+
+    def api_key(self) -> str | None:
+        if self.api_key_env is None:
+            return None
+        value = os.environ.get(self.api_key_env)
+        return value if value else None
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceConfig:
+    min_sources: int = 1
+    min_top_reranker_score: float | None = None
+    min_top_score_margin: float | None = None
+    abstention_answer: str = (
+        "Không đủ bằng chứng trong các nguồn pháp luật được truy xuất để trả lời."
+    )
+
+    @classmethod
+    def from_mapping(cls, raw: Mapping[str, Any]) -> "EvidenceConfig":
+        values = _mapping(raw, "rag.evidence")
+        _reject_unknown(
+            values,
+            {
+                "min_sources",
+                "min_top_reranker_score",
+                "min_top_score_margin",
+                "abstention_answer",
+            },
+            "rag.evidence",
+        )
+        margin = _optional_finite_float(
+            values.get("min_top_score_margin"),
+            "rag.evidence.min_top_score_margin",
+        )
+        if margin is not None and margin < 0:
+            raise ValueError(
+                "rag.evidence.min_top_score_margin must be non-negative"
+            )
+        default = cls()
+        return cls(
+            min_sources=_positive_int(
+                values.get("min_sources", default.min_sources),
+                "rag.evidence.min_sources",
+            ),
+            min_top_reranker_score=_optional_finite_float(
+                values.get("min_top_reranker_score"),
+                "rag.evidence.min_top_reranker_score",
+            ),
+            min_top_score_margin=margin,
+            abstention_answer=_text(
+                values.get("abstention_answer", default.abstention_answer),
+                "rag.evidence.abstention_answer",
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class RAGConfig:
+    max_context_tokens: int = 10_000
+    max_chunks: int | None = 8
+    max_chunks_per_document: int | None = 2
+    include_legal_metadata: bool = True
+    merge_adjacent_chunks: bool = False
+    evidence: EvidenceConfig = EvidenceConfig()
+
+    @classmethod
+    def from_mapping(cls, raw: Mapping[str, Any]) -> "RAGConfig":
+        values = _mapping(raw, "rag")
+        _reject_unknown(
+            values,
+            {
+                "max_context_tokens",
+                "max_chunks",
+                "max_chunks_per_document",
+                "include_legal_metadata",
+                "merge_adjacent_chunks",
+                "evidence",
+            },
+            "rag",
+        )
+        default = cls()
+        max_chunks = values.get("max_chunks", default.max_chunks)
+        max_chunks_per_document = values.get(
+            "max_chunks_per_document",
+            default.max_chunks_per_document,
+        )
+        return cls(
+            max_context_tokens=_positive_int(
+                values.get("max_context_tokens", default.max_context_tokens),
+                "rag.max_context_tokens",
+            ),
+            max_chunks=(
+                None
+                if max_chunks is None
+                else _positive_int(max_chunks, "rag.max_chunks")
+            ),
+            max_chunks_per_document=(
+                None
+                if max_chunks_per_document is None
+                else _positive_int(
+                    max_chunks_per_document,
+                    "rag.max_chunks_per_document",
+                )
+            ),
+            include_legal_metadata=bool(
+                values.get(
+                    "include_legal_metadata",
+                    default.include_legal_metadata,
+                )
+            ),
+            merge_adjacent_chunks=bool(
+                values.get(
+                    "merge_adjacent_chunks",
+                    default.merge_adjacent_chunks,
+                )
+            ),
+            evidence=(
+                default.evidence
+                if "evidence" not in values
+                else EvidenceConfig.from_mapping(values["evidence"])
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class AppConfig:
     dense: DenseConfig
     sparse: SparseConfig
@@ -348,6 +569,8 @@ class AppConfig:
     fusion: FusionConfig
     reranker: RerankerConfig
     source_path: Path
+    llm: LLMConfig | None = None
+    rag: RAGConfig = RAGConfig()
 
     @classmethod
     def from_yaml(cls, path: str | Path) -> "AppConfig":
@@ -355,9 +578,10 @@ class AppConfig:
         with source.open("r", encoding="utf-8") as handle:
             raw = yaml.safe_load(handle)
         root = _mapping(raw, "configuration root")
-        expected = {"dense", "sparse", "qdrant", "retrieval", "fusion", "reranker"}
-        _reject_unknown(root, expected, "root")
-        missing = sorted(expected - set(root))
+        required = {"dense", "sparse", "qdrant", "retrieval", "fusion", "reranker"}
+        allowed = required | {"llm", "rag"}
+        _reject_unknown(root, allowed, "root")
+        missing = sorted(required - set(root))
         if missing:
             raise ValueError(f"missing configuration sections: {missing}")
         retrieval = RetrievalConfig.from_mapping(_section(root, "retrieval"))
@@ -372,4 +596,14 @@ class AppConfig:
             fusion=FusionConfig.from_mapping(_section(root, "fusion")),
             reranker=reranker,
             source_path=source,
+            llm=(
+                None
+                if "llm" not in root
+                else LLMConfig.from_mapping(_section(root, "llm"))
+            ),
+            rag=(
+                RAGConfig()
+                if "rag" not in root
+                else RAGConfig.from_mapping(_section(root, "rag"))
+            ),
         )

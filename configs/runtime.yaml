@@ -47,3 +47,26 @@ reranker:
   device: auto
   dtype: auto
   trust_remote_code: false
+
+llm:
+  provider: openai_compatible
+  model: gemini-3.1-flash-lite
+  base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+  api_key_env: LEGAL_RAG_LLM_API_KEY
+  timeout_seconds: 30
+  max_retries: 0
+  temperature: 0.0
+  max_output_tokens: 1024
+  structured_output_mode: json_schema
+
+rag:
+  max_context_tokens: 10000
+  max_chunks: 8
+  max_chunks_per_document: 8
+  include_legal_metadata: true
+  merge_adjacent_chunks: false
+
+  evidence:
+    min_sources: 1
+    min_top_reranker_score: null
+    min_top_score_margin: null

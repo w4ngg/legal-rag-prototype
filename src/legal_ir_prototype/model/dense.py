@@ -42,6 +42,15 @@ class DenseEncoder:
             )
         return self._model
 
+    @property
+    def is_loaded(self) -> bool:
+        return self._model is not None
+
+    def load(self) -> None:
+        """Load and validate the pinned model without running a query."""
+
+        self._load()
+
     def encode(self, query: str) -> np.ndarray:
         normalized_query = query.strip()
         if not normalized_query:

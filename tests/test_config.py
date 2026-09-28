@@ -75,3 +75,58 @@ def test_unknown_configuration_key_is_rejected(tmp_path: Path) -> None:
     path.write_text(CONFIG + "unexpected: true\n", encoding="utf-8")
     with pytest.raises(ValueError, match="unknown root"):
         AppConfig.from_yaml(path)
+
+
+def test_optional_llm_config_uses_environment_reference_not_secret(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    llm = """
+llm:
+  provider: openai_compatible
+  model: legal-generation-model
+  base_url: https://llm.example.test/v1/
+  api_key_env: LEGAL_RAG_LLM_API_KEY
+  timeout_seconds: 60
+  max_retries: 2
+  temperature: 0.0
+  max_output_tokens: 1024
+  structured_output_mode: json_schema
+"""
+    path = tmp_path / "runtime.yaml"
+    path.write_text(CONFIG + llm, encoding="utf-8")
+    monkeypatch.setenv("LEGAL_RAG_LLM_API_KEY", "runtime-secret")
+
+    config = AppConfig.from_yaml(path)
+
+    assert config.llm is not None
+    assert config.llm.model == "legal-generation-model"
+    assert config.llm.base_url == "https://llm.example.test/v1"
+    assert config.llm.api_key() == "runtime-secret"
+
+
+def test_optional_rag_config_controls_context_and_evidence(tmp_path: Path) -> None:
+    rag = """
+rag:
+  max_context_tokens: 4096
+  max_chunks: 6
+  max_chunks_per_document: null
+  include_legal_metadata: true
+  merge_adjacent_chunks: true
+  evidence:
+    min_sources: 2
+    min_top_reranker_score: 1.5
+    min_top_score_margin: 0.2
+"""
+    path = tmp_path / "runtime.yaml"
+    path.write_text(CONFIG + rag, encoding="utf-8")
+
+    config = AppConfig.from_yaml(path)
+
+    assert config.rag.max_context_tokens == 4096
+    assert config.rag.max_chunks == 6
+    assert config.rag.max_chunks_per_document is None
+    assert config.rag.merge_adjacent_chunks is True
+    assert config.rag.evidence.min_sources == 2
+    assert config.rag.evidence.min_top_reranker_score == 1.5
+    assert config.rag.evidence.min_top_score_margin == 0.2

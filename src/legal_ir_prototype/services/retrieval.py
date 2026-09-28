@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import time
+from collections.abc import Callable
+
 from ..core.config import AppConfig
 from ..domain.models import LegalChunk
 from ..fusion import FusionStrategy
@@ -19,6 +22,7 @@ class RetrievalService:
         vector_store: QdrantVectorStore,
         fusion: FusionStrategy,
         reranker: Reranker,
+        timing_observer: Callable[[str, float], None] | None = None,
     ) -> None:
         if sparse_encoder.vector_name != config.qdrant.sparse_vector_name:
             raise ValueError(
@@ -30,8 +34,22 @@ class RetrievalService:
         self.vector_store = vector_store
         self.fusion = fusion
         self.reranker = reranker
+        self._timing_observer = timing_observer
+
+    def set_timing_observer(
+        self,
+        observer: Callable[[str, float], None] | None,
+    ) -> None:
+        """Attach transport-level timing without changing retrieval semantics."""
+
+        self._timing_observer = observer
+
+    def _observe(self, stage: str, started: float) -> None:
+        if self._timing_observer is not None:
+            self._timing_observer(stage, time.perf_counter() - started)
 
     def retrieve(self, query: str) -> list[LegalChunk]:
+        retrieval_started = time.perf_counter()
         normalized_query = query.strip()
         if not normalized_query:
             raise ValueError("query must not be empty")
@@ -40,18 +58,31 @@ class RetrievalService:
         )
         dense_vector = self.dense_encoder.encode(normalized_query)
         sparse_vector = self.sparse_encoder.encode(normalized_query)
-        dense_hits = self.vector_store.search_dense(
-            dense_vector,
-            self.config.retrieval.dense_top_k,
-        )
-        sparse_hits = self.vector_store.search_sparse(
-            sparse_vector,
-            self.config.retrieval.sparse_top_k,
-        )
+        dense_search_started = time.perf_counter()
+        try:
+            dense_hits = self.vector_store.search_dense(
+                dense_vector,
+                self.config.retrieval.dense_top_k,
+            )
+        finally:
+            self._observe("qdrant_dense", dense_search_started)
+        sparse_search_started = time.perf_counter()
+        try:
+            sparse_hits = self.vector_store.search_sparse(
+                sparse_vector,
+                self.config.retrieval.sparse_top_k,
+            )
+        finally:
+            self._observe("qdrant_sparse", sparse_search_started)
         candidates = self.fusion.fuse(
             {"dense": dense_hits, "sparse": sparse_hits},
         )
-        reranker_scores = self.reranker.score(normalized_query, candidates)
+        self._observe("retrieval_pre_rerank", retrieval_started)
+        reranker_started = time.perf_counter()
+        try:
+            reranker_scores = self.reranker.score(normalized_query, candidates)
+        finally:
+            self._observe("reranker", reranker_started)
         ranked = sorted(
             zip(candidates, reranker_scores, strict=True),
             key=lambda item: (-item[1], item[0].fusion_rank, item[0].chunk_id),
