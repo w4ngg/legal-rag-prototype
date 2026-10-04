@@ -11,15 +11,19 @@ import os
 import re
 import time
 import uuid
+from collections.abc import Sequence
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from ..core import AppConfig
+from ..environment import load_environment_file
 from ..vectorstore import QdrantUnavailableError
 from .errors import APIError
 from .metrics import APIMetrics
@@ -49,6 +53,36 @@ def _environment_bool(name: str, default: bool) -> bool:
     raise ValueError(f"{name} must be a boolean")
 
 
+def _normalize_cors_origins(origins: Sequence[str]) -> tuple[str, ...]:
+    normalized: list[str] = []
+    for raw_origin in origins:
+        origin = raw_origin.strip().rstrip("/")
+        if not origin:
+            continue
+        if origin == "*":
+            raise ValueError("LEGAL_RAG_CORS_ORIGINS must not contain '*'")
+        parsed = urlsplit(origin)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.netloc
+            or parsed.path
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError(
+                "LEGAL_RAG_CORS_ORIGINS contains an invalid origin: "
+                f"{raw_origin!r}"
+            )
+        if origin not in normalized:
+            normalized.append(origin)
+    return tuple(normalized)
+
+
+def _environment_cors_origins() -> tuple[str, ...]:
+    raw = os.environ.get("LEGAL_RAG_CORS_ORIGINS", "")
+    return _normalize_cors_origins(raw.split(","))
+
+
 def _error_body(
     request: Request,
     *,
@@ -74,6 +108,7 @@ def create_app(
     internal_api_key: str | None = None,
     require_cuda: bool | None = None,
     max_concurrent_inference: int | None = None,
+    cors_origins: Sequence[str] | None = None,
 ) -> FastAPI:
     enable_retrieve = (
         _environment_bool("LEGAL_RAG_ENABLE_RETRIEVE", False)
@@ -107,6 +142,11 @@ def create_app(
         config_path
         or os.environ.get("LEGAL_RAG_CONFIG", "configs/runtime.yaml")
     ).expanduser()
+    allowed_origins = (
+        _environment_cors_origins()
+        if cors_origins is None
+        else _normalize_cors_origins(cors_origins)
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -139,6 +179,15 @@ def create_app(
         version="1.0.0",
         lifespan=lifespan,
     )
+    if allowed_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(allowed_origins),
+            allow_credentials=False,
+            allow_methods=["GET", "POST", "OPTIONS"],
+            allow_headers=["Content-Type", "X-Request-ID"],
+            expose_headers=["X-Request-ID"],
+        )
     app.state.runtime = None
     app.state.startup_error = None
     app.state.metrics = APIMetrics()
@@ -330,10 +379,18 @@ def main() -> None:
         type=Path,
         default=Path("configs/runtime.yaml"),
     )
+    parser.add_argument(
+        "--env-file",
+        type=Path,
+        default=Path(".env"),
+        help="Load local secrets/settings from this dotenv file if it exists.",
+    )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--require-cuda", action="store_true")
     args = parser.parse_args()
+
+    load_environment_file(args.env_file)
 
     if args.require_cuda:
         os.environ["LEGAL_RAG_REQUIRE_CUDA"] = "true"

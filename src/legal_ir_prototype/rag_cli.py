@@ -10,6 +10,7 @@ from typing import Sequence
 
 from .core import AppConfig
 from .domain import LLMAnswer
+from .environment import load_environment_file
 from .llm import FakeLLMClient, LLMClient, OpenAICompatibleLLMClient
 from .rag import (
     ContextBuildConfig,
@@ -31,6 +32,12 @@ def _parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument(
+        "--env-file",
+        type=Path,
+        default=Path(".env"),
+        help="Load local secrets/settings from this dotenv file if it exists.",
+    )
     parser.add_argument("--query", required=True)
     parser.add_argument(
         "--show-context",
@@ -141,6 +148,7 @@ async def _run(
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    load_environment_file(args.env_file)
     result = asyncio.run(
         _run(
             config_path=args.config,

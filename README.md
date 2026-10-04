@@ -104,11 +104,18 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 cp configs/local.yaml configs/runtime.yaml
+cp .env.example .env
+chmod 600 .env
 ```
 
 Edit `configs/runtime.yaml`. Model IDs, revisions, Qdrant URL/collection/vector
 names, artifact path, top-k values, weights, model lengths and device/dtype all
 live in this file; none are embedded in implementation code.
+
+Edit `.env` and replace the LLM key placeholder. The file is ignored by Git.
+`LEGAL_RAG_CORS_ORIGINS` is a comma-separated allowlist of exact frontend
+origins; wildcard origins are rejected. Values already present in the process
+environment take precedence over `.env`.
 
 ## CLI smoke test
 
@@ -127,10 +134,9 @@ fusion, or reranking.
 End-to-end grounded RAG (the YAML must include an `llm` section):
 
 ```bash
-export LEGAL_RAG_LLM_API_KEY='replace-with-provider-key'
-
 legal-rag-smoke \
   --config configs/runtime.yaml \
+  --env-file .env \
   --query 'Người khiếu nại có quyền và nghĩa vụ gì?' \
   --show-context
 ```
@@ -146,10 +152,17 @@ the JSON output. Omit it when evidence text must not be printed or logged.
 Start one API process (one process owns one dense model and one reranker):
 
 ```bash
-export LEGAL_RAG_CONFIG="$PWD/configs/runtime.yaml"
-export LEGAL_RAG_LLM_API_KEY='replace-with-provider-key'
-legal-rag-api --host 0.0.0.0 --port 8000 --require-cuda
+legal-rag-api \
+  --config configs/runtime.yaml \
+  --env-file .env \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --require-cuda
 ```
+
+On macOS, omit `--require-cuda`. For local browser testing, the example `.env`
+allows `http://localhost:3000` and `http://127.0.0.1:3000`. Add the exact HTTPS
+Vercel production origin before deployment; do not use `*`.
 
 The HTTP contract is:
 
@@ -208,3 +221,73 @@ by snapshot. For later corpus rebuilds, the new pipeline encodes dense vectors
 and computes BM25 sparse weights directly into Qdrant without creating FAISS.
 Commands, artifact contracts, resumability and S3/AWS restore steps are in
 [`docs/ingestion.md`](docs/ingestion.md).
+
+## Vercel demo through Cloudflare Tunnel
+
+For a temporary demo, the Vercel frontend can call a FastAPI process running
+on the local Mac through a Cloudflare Quick Tunnel. First verify that FastAPI
+is healthy locally:
+
+```bash
+curl -fsS http://127.0.0.1:8000/health
+curl -fsS http://127.0.0.1:8000/ready
+```
+
+Then keep a separate terminal open and create the tunnel. HTTP/2 is selected
+explicitly because it is often more reliable than QUIC on restricted networks:
+
+```bash
+cloudflared tunnel \
+  --protocol http2 \
+  --url http://127.0.0.1:8000
+```
+
+Copy the generated `https://<random-name>.trycloudflare.com` URL and verify it:
+
+```bash
+export LEGAL_RAG_PUBLIC_API="https://<random-name>.trycloudflare.com"
+
+curl -fsS "$LEGAL_RAG_PUBLIC_API/health"
+curl -fsS "$LEGAL_RAG_PUBLIC_API/ready"
+```
+
+Set the following environment variable in the Vercel project for Production
+and, when applicable, Preview:
+
+```text
+NEXT_PUBLIC_API_BASE_URL=https://<random-name>.trycloudflare.com
+```
+
+Redeploy the frontend after changing this variable. The backend CORS allowlist
+must contain the exact frontend origin, not the tunnel URL:
+
+```dotenv
+LEGAL_RAG_CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://<actual-project>.vercel.app
+```
+
+Restart FastAPI after changing `.env`.
+
+### Troubleshooting `Unauthorized: Tunnel not found`
+
+The following message normally means that an old ephemeral Quick Tunnel is no
+longer registered with Cloudflare:
+
+```text
+ERR Register tunnel error from server side error="Unauthorized: Tunnel not found"
+```
+
+Do not leave that process retrying. Recover as follows:
+
+1. Stop the old `cloudflared` process with `Ctrl+C`.
+2. Confirm `/health` and `/ready` still work on `127.0.0.1:8000`.
+3. Run the `cloudflared tunnel --protocol http2 --url ...` command above.
+4. Test the newly generated public URL.
+5. Replace `NEXT_PUBLIC_API_BASE_URL` in Vercel with the new URL.
+6. Redeploy the frontend and test `/v1/chat` from the deployed UI.
+
+A Quick Tunnel URL is temporary, changes when the tunnel is recreated, and
+stops working when the `cloudflared` process or the Mac stops. Use a named
+Cloudflare Tunnel with a stable hostname for a persistent demo. If the error
+comes from a named tunnel instead, verify that the tunnel still exists in the
+Cloudflare dashboard and run it with its current credentials/token; a deleted
+tunnel or an old rotated token cannot register a new connection.

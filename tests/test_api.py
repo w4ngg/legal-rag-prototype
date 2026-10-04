@@ -96,12 +96,18 @@ class FakeRuntime:
         }
 
 
-def _client(*, ready: bool = True, retrieve: bool = True) -> TestClient:
+def _client(
+    *,
+    ready: bool = True,
+    retrieve: bool = True,
+    cors_origins: tuple[str, ...] = (),
+) -> TestClient:
     return TestClient(
         create_app(
             runtime=FakeRuntime(ready=ready),
             enable_retrieve_endpoint=retrieve,
             internal_api_key="test-secret" if retrieve else None,
+            cors_origins=cors_origins,
         )
     )
 
@@ -149,6 +155,32 @@ def test_chat_returns_validated_structured_response_and_request_id() -> None:
             "source_url": "https://example.test/bbld-2019",
         }
     ]
+
+
+def test_chat_cors_preflight_allows_only_configured_frontend() -> None:
+    with _client(cors_origins=("http://localhost:3000",)) as client:
+        allowed = client.options(
+            "/v1/chat",
+            headers={
+                "Origin": "http://localhost:3000",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type,x-request-id",
+            },
+        )
+        denied = client.options(
+            "/v1/chat",
+            headers={
+                "Origin": "https://untrusted.example",
+                "Access-Control-Request-Method": "POST",
+            },
+        )
+
+    assert allowed.status_code == 200
+    assert allowed.headers["access-control-allow-origin"] == (
+        "http://localhost:3000"
+    )
+    assert denied.status_code == 400
+    assert "access-control-allow-origin" not in denied.headers
 
 
 def test_retrieve_requires_internal_key_and_returns_scores() -> None:

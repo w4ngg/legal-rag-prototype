@@ -3,9 +3,10 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
+.env.*
+!.env.example
 dist/
 build/
 *.egg-info/
 artifacts/
 huong_dan_aws.md
-.env.*
