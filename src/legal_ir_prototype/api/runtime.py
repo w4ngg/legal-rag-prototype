@@ -6,11 +6,12 @@ import inspect
 import os
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
-from typing import Any
+from typing import Any, Callable, Mapping
 
 from ..core import AppConfig
 from ..domain import LLMAnswer
 from ..llm import FakeLLMClient, LLMClient, OpenAICompatibleLLMClient
+from ..llm.transport import RetryPolicy
 from ..rag import (
     ContextBuildConfig,
     ContextBuilder,
@@ -72,6 +73,8 @@ class ApplicationRuntime:
         config: AppConfig,
         *,
         require_cuda: bool = False,
+        llm_retry_policy: RetryPolicy | None = None,
+        llm_attempt_observer: Callable[[Mapping[str, Any]], None] | None = None,
     ) -> "ApplicationRuntime":
         if config.llm is None:
             raise ValueError("API runtime requires an llm configuration section")
@@ -88,7 +91,10 @@ class ApplicationRuntime:
                 )
             )
         else:
-            llm_client = OpenAICompatibleLLMClient(config.llm)
+            llm_client = OpenAICompatibleLLMClient(
+                config.llm, retry_policy=llm_retry_policy,
+                attempt_observer=llm_attempt_observer,
+            )
         rag_config = config.rag
         evidence_config = rag_config.evidence
         return cls(

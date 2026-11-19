@@ -105,6 +105,8 @@ def test_rag_service_execution_exposes_context_and_exact_prompt() -> None:
     )
 
     assert execution.response.abstained is False
+    assert execution.retrieved_chunks[0].chunk_id == "chunk-1"
+    assert execution.llm_answer is llm.response
     assert execution.context.sources[0].source_id == "SOURCE_1"
     assert execution.prompt is not None
     assert execution.prompt.user_prompt == llm.calls[0].user_prompt
