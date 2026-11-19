@@ -4,6 +4,10 @@ Frontend demo cho Vietnamese Legal RAG, xây dựng bằng Next.js App Router,
 TypeScript và Tailwind CSS. Giao diện chỉ hiển thị dữ liệu thuộc public contract
 của API; không hiển thị model, retrieval score hay thông tin hạ tầng nội bộ.
 
+Frontend nằm trong thư mục `frontend/` của monorepo `legal-rag-prototype`;
+backend FastAPI nằm ở root repo. Chạy các lệnh npm bên dưới từ thư mục
+`frontend/`.
+
 ## Chạy local
 
 Yêu cầu Node.js 20.9 trở lên.
@@ -58,7 +62,8 @@ thêm đúng domain đó vào CORS rồi kiểm tra preflight và `POST /v1/chat
 
 ## Deploy Vercel
 
-1. Import repository này vào Vercel.
+1. Import repo `legal-rag-prototype` vào Vercel và đặt **Root Directory** là
+   `frontend`. Dùng Install Command `npm ci` và Build Command `npm run build`.
 2. Khai báo `NEXT_PUBLIC_API_BASE_URL` bằng HTTPS URL của FastAPI cho Production
    và Preview nếu cần.
 3. Redeploy sau khi đổi biến môi trường vì biến `NEXT_PUBLIC_*` được nhúng vào
