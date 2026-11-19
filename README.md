@@ -54,6 +54,43 @@ inside `frontend/` with `npm run lint` and `npm run build`.
 `runs/`, generated judge results, `docs/`, local environments and model artifacts
 are ignored by Git. Frozen benchmark inputs under `evals/` remain versioned.
 
+
+## Evaluation on performance and observability
+
+This fine-tuned model increase recall@5 from 90 to 95 (+5) on internal test and ~94.7 on private test in the competition.
+The following experiments were run on Mac M4 MPS.
+
+
+
+### Latency per case (seconds)
+
+LLM response latency uses the successful HTTP attempt for each case, excluding
+failed attempts and retry/pacing waits. It measures client-observed time to
+receive the full response, including network and provider processing.
+
+| Stage | Avg/case | P50 | P95 | Max |
+|---|---:|---:|---:|---:|
+| Qdrant dense | 0.242 | 0.210 | 0.516 | 1.493 |
+| Qdrant sparse | 0.031 | 0.025 | 0.060 | 0.128 |
+| Retrieval before reranking | 0.518 | 0.418 | 1.086 | 2.866 |
+| Reranker | 25.384 | 22.622 | 43.199 | 52.612 |
+| Retrieval total, including reranking | 25.905 | 22.987 | 44.191 | 53.557 |
+| LLM response, excluding retry/wait | 4.403 | 3.401 | 9.357 | 41.732 |
+| Full pipeline, including retry/wait | 30.810 | 27.244 | 52.036 | 134.324 |
+
+Retrieval total includes reranking; these stages are not additive. Full pipeline
+latency retains retry/wait time as recorded by the service.
+
+### Token usage
+
+Reported generation usage across the 300 cases. Pricing is left blank for manual
+entry.
+
+| Token usage | Total | Avg/case | Total pricing |
+|---|---:|---:|---:|
+| Input | 2,118,613 | 7,062.043 | |
+| Output | 51,336 | 171.120 | |
+
 ## Package layout
 
 ```text
@@ -403,116 +440,4 @@ Judge v2 understands behavioral rubrics and must use a new output file when
 upgrading a v1 run. `runs/` is ignored by Git, while the small frozen dataset
 and its source hash can be versioned.
 
-## Tracing
 
-Generation results from `prototype300_run1` on **2026-11-18**: **300 cases**
-(250 QA questions and 50 behavioral probes), using `gemini-3.1-flash-lite`.
-Values come from `generation_trace.jsonl` and `summary.json` in
-`runs/qa_eval/prototype300_run1/`.
-
-### Latency per case (seconds)
-
-LLM response latency uses the successful HTTP attempt for each case, excluding
-failed attempts and retry/pacing waits. It measures client-observed time to
-receive the full response, including network and provider processing.
-
-| Stage | Avg/case | P50 | P95 | Max |
-|---|---:|---:|---:|---:|
-| Qdrant dense | 0.242 | 0.210 | 0.516 | 1.493 |
-| Qdrant sparse | 0.031 | 0.025 | 0.060 | 0.128 |
-| Retrieval before reranking | 0.518 | 0.418 | 1.086 | 2.866 |
-| Reranker | 25.384 | 22.622 | 43.199 | 52.612 |
-| Retrieval total, including reranking | 25.905 | 22.987 | 44.191 | 53.557 |
-| LLM response, excluding retry/wait | 4.403 | 3.401 | 9.357 | 41.732 |
-| Full pipeline, including retry/wait | 30.810 | 27.244 | 52.036 | 134.324 |
-
-Retrieval total includes reranking; these stages are not additive. Full pipeline
-latency retains retry/wait time as recorded by the service.
-
-### Token usage
-
-Reported generation usage across the 300 cases. Pricing is left blank for manual
-entry.
-
-| Token usage | Total | Avg/case | Total pricing |
-|---|---:|---:|---:|
-| Input | 2,118,613 | 7,062.043 | |
-| Output | 51,336 | 171.120 | |
-
-## Ingestion and AWS migration
-
-For the first deployment, migrate the already validated local Qdrant collection
-by snapshot. For later corpus rebuilds, the new pipeline encodes dense vectors
-and computes BM25 sparse weights directly into Qdrant without creating FAISS.
-Commands, artifact contracts, resumability and S3/AWS restore steps are in the
-local, Git-ignored `docs/ingestion.md`.
-
-## Vercel demo through Cloudflare Tunnel
-
-For a temporary demo, the Vercel frontend can call a FastAPI process running
-on the local Mac through a Cloudflare Quick Tunnel. First verify that FastAPI
-is healthy locally:
-
-```bash
-curl -fsS http://127.0.0.1:8000/health
-curl -fsS http://127.0.0.1:8000/ready
-```
-
-Then keep a separate terminal open and create the tunnel. HTTP/2 is selected
-explicitly because it is often more reliable than QUIC on restricted networks:
-
-```bash
-cloudflared tunnel \
-  --protocol http2 \
-  --url http://127.0.0.1:8000
-```
-
-Copy the generated `https://<random-name>.trycloudflare.com` URL and verify it:
-
-```bash
-export LEGAL_RAG_PUBLIC_API="https://<random-name>.trycloudflare.com"
-
-curl -fsS "$LEGAL_RAG_PUBLIC_API/health"
-curl -fsS "$LEGAL_RAG_PUBLIC_API/ready"
-```
-
-Set the following environment variable in the Vercel project for Production
-and, when applicable, Preview:
-
-```text
-NEXT_PUBLIC_API_BASE_URL=https://<random-name>.trycloudflare.com
-```
-
-Redeploy the frontend after changing this variable. The backend CORS allowlist
-must contain the exact frontend origin, not the tunnel URL:
-
-```dotenv
-LEGAL_RAG_CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,https://<actual-project>.vercel.app
-```
-
-Restart FastAPI after changing `.env`.
-
-### Troubleshooting `Unauthorized: Tunnel not found`
-
-The following message normally means that an old ephemeral Quick Tunnel is no
-longer registered with Cloudflare:
-
-```text
-ERR Register tunnel error from server side error="Unauthorized: Tunnel not found"
-```
-
-Do not leave that process retrying. Recover as follows:
-
-1. Stop the old `cloudflared` process with `Ctrl+C`.
-2. Confirm `/health` and `/ready` still work on `127.0.0.1:8000`.
-3. Run the `cloudflared tunnel --protocol http2 --url ...` command above.
-4. Test the newly generated public URL.
-5. Replace `NEXT_PUBLIC_API_BASE_URL` in Vercel with the new URL.
-6. Redeploy the frontend and test `/v1/chat` from the deployed UI.
-
-A Quick Tunnel URL is temporary, changes when the tunnel is recreated, and
-stops working when the `cloudflared` process or the Mac stops. Use a named
-Cloudflare Tunnel with a stable hostname for a persistent demo. If the error
-comes from a named tunnel instead, verify that the tunnel still exists in the
-Cloudflare dashboard and run it with its current credentials/token; a deleted
-tunnel or an old rotated token cannot register a new connection.
