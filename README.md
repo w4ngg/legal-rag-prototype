@@ -5,10 +5,54 @@ Qdrant collection containing **long legal chunks** with the same BM25 and dense
 retrieval semantics, deduplicates the lane union, attaches weighted-RRF
 provenance, and reranks every retained chunk with the fine-tuned cross-encoder.
 
-It intentionally contains no training, mining, notebooks, offline evaluation,
-or experiment code. Grounded QA is implemented as an inference-only layer over
+It intentionally contains no training, mining, or notebooks. Offline QA
+evaluation exercises the same online service. Grounded QA is an inference-only layer over
 retrieval. Offline production ingestion is isolated from online inference under
 `legal_ir_prototype.ingestion`.
+
+## Monorepo
+
+The FastAPI backend lives at the repository root; the Next.js frontend lives in
+[`frontend/`](frontend/). Both applications keep their own dependencies and
+environment files.
+
+```text
+legal-rag-prototype/
+├── src/legal_ir_prototype/    # Python backend
+├── configs/
+├── tests/
+├── evals/                    # Frozen benchmark inputs
+├── docker/
+├── pyproject.toml
+└── frontend/                 # Next.js frontend
+    ├── src/
+    ├── package.json
+    └── package-lock.json
+```
+
+Run backend commands from the repository root. In a separate terminal, start
+the frontend with:
+
+```bash
+cd frontend
+npm ci
+cp .env.example .env.local
+npm run dev
+```
+
+Set `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local` to the backend URL. The
+backend's `LEGAL_RAG_CORS_ORIGINS` must include the frontend origin.
+
+For Vercel, connect this repository and set **Root Directory** to `frontend`,
+with build command `npm run build` and install command `npm ci`. Configure
+`NEXT_PUBLIC_API_BASE_URL` in the Vercel project. The backend retains the root
+Docker build context and can be deployed independently.
+
+Backend checks run from the root with `python -m pytest`; frontend checks run
+inside `frontend/` with `npm run lint` and `npm run build`.
+
+`runs/`, generated judge results, `docs/`, local environments and model artifacts
+are ignored by Git. Frozen benchmark inputs under `evals/` remain versioned.
 
 ## Package layout
 
@@ -83,8 +127,8 @@ Score-based evidence thresholds are optional and disabled until calibrated on a
 validation set. Raw reranker logits and LLM-reported confidence are not treated
 as probabilities.
 
-The detailed correspondence to the research source is in
-[`docs/research_inference_audit.md`](docs/research_inference_audit.md).
+The local research correspondence notes are kept in
+`docs/research_inference_audit.md` (ignored by Git).
 
 ## Prerequisites
 
@@ -214,13 +258,194 @@ The live parity test compares dense@K and BM25-sparse@K chunk IDs for query IDs
 `83864`, `151910`, and `154226`. Because it performs exact lane comparison, a
 different corpus/index/model revision correctly fails the test.
 
+## Offline QA evaluation
+
+For multiple samples **in one prompt**, evidence/behavior diagnosis, legal-anchor
+comparison and explicit error rates, use the new `judge-diagnostic` command:
+
+```bash
+legal-rag-eval judge-diagnostic \
+  --config configs/judge_large.yaml \
+  --predictions runs/qa_eval/prototype300_run1/predictions.jsonl \
+  --output runs/qa_eval/prototype300_run1/judge_diagnostic_v3.jsonl \
+  --samples-per-prompt 5 --continue
+```
+
+It keeps v2 outputs intact, persists results per case, and writes an analysis
+directory beside its output. No generation/retrieval is repeated. Details,
+classification rules, limits of inferred legal references and the separate
+offline `analyze` command are in the local, Git-ignored
+`docs/diagnostic_evaluation.md`.
+
+The current frozen benchmark contains **250 labeled QA questions plus 50
+guardrail/abstention probes** in
+`evals/datasets/prototype300_v1/cases.jsonl`. The original QA answers are retained;
+behavior probes use explicit rubrics. See [`evals/README.md`](evals/README.md)
+for selection, provenance, slices and limitations.
+
+Use `--continue` on both the initial invocation and subsequent invocations:
+it skips successful cases, retries previously failed cases, and processes the
+remaining cases without restarting completed work.
+
+```bash
+legal-rag-eval run \
+  --config configs/runtime.yaml \
+  --env-file .env \
+  --dataset evals/datasets/prototype300_v1/cases.jsonl \
+  --output runs/qa_eval/prototype300_run1 \
+  --continue
+
+legal-rag-eval judge \
+  --config configs/judge_large.yaml \
+  --env-file .env \
+  --predictions runs/qa_eval/prototype300_run1/predictions.jsonl \
+  --output runs/qa_eval/prototype300_run1/judge_results_v2.jsonl \
+  --continue
+```
+
+Generation and judging share bounded timeout/HTTP retries, exponential backoff
+with jitter, HTTP `Retry-After` and Gemini `RetryInfo` support. Progress is
+fsynced after each case; resume can recover a truncated final JSONL record,
+preserving its bytes in a backup. Only an unfinished case may need another
+provider call after an abrupt crash. `generation_trace.jsonl` and
+`judge_results_v2.trace.jsonl` record each HTTP attempt, latency and reported
+token usage. Optional explicit token prices enable cost estimates; absent
+prices remain `null`. Full commands, recovery behavior and cost limitations
+are documented in the local, Git-ignored `docs/evaluation.md`.
+
+The earlier 30-case development workflow remains supported:
+
+`legal-rag-eval` runs the exact online `RAGService` in one process, so the
+dense encoder and reranker are loaded once. Evaluation questions, answers,
+retrieved chunks, selected context and per-stage timings are written to
+offline artifacts; they are deliberately not added to production request
+logs.
+
+Freeze the initial 30-case QA development set once:
+
+```bash
+legal-rag-eval prepare \
+  --source /Users/w4ng/xquang/DSC_Legal/QA/train.json \
+  --sample-size 30 \
+  --seed 2026 \
+  --output evals/datasets/qa_random30_v0
+```
+
+Run generation sequentially and resume safely after an interruption:
+
+```bash
+legal-rag-eval run \
+  --config configs/runtime.yaml \
+  --env-file .env \
+  --dataset evals/datasets/qa_random30_v0/cases.jsonl \
+  --output runs/qa_eval/qa_random30_run1 \
+  --resume
+```
+
+Before spending 30 generation calls, validate the real dependencies and
+artifact schema with a separate three-case smoke run:
+
+```bash
+legal-rag-eval run \
+  --config configs/runtime.yaml \
+  --env-file .env \
+  --dataset evals/datasets/qa_random30_v0/cases.jsonl \
+  --output runs/qa_eval/qa_random30_smoke3 \
+  --limit 3
+```
+
+The default artifacts omit the exact prompt and provider raw response. Opt in
+only for a controlled local evaluation with `--include-prompt` and/or
+`--include-raw-llm-response`.
+
+Run deterministic validation followed by one structured LLM judge call per
+successful prediction:
+
+```bash
+legal-rag-eval judge \
+  --predictions runs/qa_eval/qa_random30_run1/predictions.jsonl \
+  --output runs/qa_eval/qa_random30_run1/judge_results_v2.jsonl \
+  --resume
+```
+
+Transient provider failures are retained as append-only attempt history. Retry
+only the currently failed generation cases without repeating successful calls:
+
+```bash
+legal-rag-eval run \
+  --config configs/runtime.yaml \
+  --env-file .env \
+  --dataset evals/datasets/qa_random30_v0/cases.jsonl \
+  --output runs/qa_eval/qa_random30_run1 \
+  --resume \
+  --retry-errors
+```
+
+Retry only failed judge calls in the same way:
+
+```bash
+legal-rag-eval judge \
+  --config configs/judge_large.yaml \
+  --env-file .env \
+  --predictions runs/qa_eval/qa_random30_run1/predictions.jsonl \
+  --output runs/qa_eval/qa_random30_run1/judge_results_large_v2.jsonl \
+  --resume \
+  --retry-errors
+```
+
+Summary metrics always use the newest attempt per `case_id`; a historical 503
+stays in the JSONL audit trail but is no longer counted after a successful
+retry.
+
+New runs save an immutable resolved runtime snapshot. The judge uses that
+snapshot unless `--config` is explicit; legacy config paths are hash-checked.
+Judge v2 understands behavioral rubrics and must use a new output file when
+upgrading a v1 run. `runs/` is ignored by Git, while the small frozen dataset
+and its source hash can be versioned.
+
+## Tracing
+
+Generation results from `prototype300_run1` on **2026-11-18**: **300 cases**
+(250 QA questions and 50 behavioral probes), using `gemini-3.1-flash-lite`.
+Values come from `generation_trace.jsonl` and `summary.json` in
+`runs/qa_eval/prototype300_run1/`.
+
+### Latency per case (seconds)
+
+LLM response latency uses the successful HTTP attempt for each case, excluding
+failed attempts and retry/pacing waits. It measures client-observed time to
+receive the full response, including network and provider processing.
+
+| Stage | Avg/case | P50 | P95 | Max |
+|---|---:|---:|---:|---:|
+| Qdrant dense | 0.242 | 0.210 | 0.516 | 1.493 |
+| Qdrant sparse | 0.031 | 0.025 | 0.060 | 0.128 |
+| Retrieval before reranking | 0.518 | 0.418 | 1.086 | 2.866 |
+| Reranker | 25.384 | 22.622 | 43.199 | 52.612 |
+| Retrieval total, including reranking | 25.905 | 22.987 | 44.191 | 53.557 |
+| LLM response, excluding retry/wait | 4.403 | 3.401 | 9.357 | 41.732 |
+| Full pipeline, including retry/wait | 30.810 | 27.244 | 52.036 | 134.324 |
+
+Retrieval total includes reranking; these stages are not additive. Full pipeline
+latency retains retry/wait time as recorded by the service.
+
+### Token usage
+
+Reported generation usage across the 300 cases. Pricing is left blank for manual
+entry.
+
+| Token usage | Total | Avg/case | Total pricing |
+|---|---:|---:|---:|
+| Input | 2,118,613 | 7,062.043 | |
+| Output | 51,336 | 171.120 | |
+
 ## Ingestion and AWS migration
 
 For the first deployment, migrate the already validated local Qdrant collection
 by snapshot. For later corpus rebuilds, the new pipeline encodes dense vectors
 and computes BM25 sparse weights directly into Qdrant without creating FAISS.
-Commands, artifact contracts, resumability and S3/AWS restore steps are in
-[`docs/ingestion.md`](docs/ingestion.md).
+Commands, artifact contracts, resumability and S3/AWS restore steps are in the
+local, Git-ignored `docs/ingestion.md`.
 
 ## Vercel demo through Cloudflare Tunnel
 

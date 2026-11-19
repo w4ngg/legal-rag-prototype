@@ -12,6 +12,12 @@ class LLMConfigurationError(LLMError):
 class LLMTransportError(LLMError):
     """The provider could not be reached or returned an HTTP error."""
 
+    def __init__(self, message: str, *, status_code: int | None = None,
+                 retryable: bool = True) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.retryable = retryable
+
 
 class LLMResponseError(LLMError):
     """The provider response envelope was missing required data."""

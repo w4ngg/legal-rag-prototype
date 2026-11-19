@@ -9,4 +9,13 @@ dist/
 build/
 *.egg-info/
 artifacts/
+# Local evaluation runs and generated judge outputs.
+runs/
+judge*.jsonl
+judge*.summary.json
+judge*.manifest.json
+judge*.analysis/
+judge*.lock
+# Documentation is kept locally, outside the published repository.
+docs/
 huong_dan_aws.md

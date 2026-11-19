@@ -1,0 +1,2232 @@
+{
+  "schema_version": 1,
+  "dataset_id": "qa250_v1",
+  "created_at": "2026-11-18T07:08:31.755326+00:00",
+  "source_path": "/Users/w4ng/xquang/DSC_Legal/QA/train.json",
+  "source_sha256": "2a52501cc065d266f2f832475950bcf1e7c75c386efa9b2f568f251d745f5988",
+  "selection_method": "stratified_unique_questions",
+  "seed": 2026,
+  "requested_sample_size": 250,
+  "selected_sample_size": 250,
+  "selected_source_query_ids": [
+    "74639",
+    "62387",
+    "25617",
+    "22801",
+    "34973",
+    "29265",
+    "102803",
+    "149853",
+    "106165",
+    "10315",
+    "147963",
+    "147639",
+    "57687",
+    "73871",
+    "4519",
+    "125893",
+    "96819",
+    "87409",
+    "77119",
+    "105677",
+    "40911",
+    "119569",
+    "9955",
+    "3083",
+    "100395",
+    "93007",
+    "96963",
+    "141125",
+    "22793",
+    "71911",
+    "31955",
+    "91987",
+    "158301",
+    "132175",
+    "89729",
+    "52387",
+    "66585",
+    "11565",
+    "118935",
+    "135535",
+    "91065",
+    "1967",
+    "133623",
+    "164987",
+    "128861",
+    "54399",
+    "31517",
+    "86365",
+    "63929",
+    "108283",
+    "20021",
+    "146919",
+    "5333",
+    "90811",
+    "97159",
+    "134363",
+    "50323",
+    "134605",
+    "15325",
+    "108269",
+    "101783",
+    "100045",
+    "125909",
+    "112467",
+    "29577",
+    "75965",
+    "135931",
+    "130087",
+    "68253",
+    "86693",
+    "56029",
+    "86519",
+    "100157",
+    "71263",
+    "134131",
+    "52903",
+    "37165",
+    "15563",
+    "127379",
+    "82463",
+    "124813",
+    "41135",
+    "163953",
+    "45085",
+    "113299",
+    "120841",
+    "140639",
+    "136057",
+    "55333",
+    "76249",
+    "73171",
+    "130915",
+    "107487",
+    "96889",
+    "42409",
+    "51769",
+    "141819",
+    "55455",
+    "156869",
+    "75603",
+    "113515",
+    "158139",
+    "69207",
+    "38915",
+    "121335",
+    "165335",
+    "59275",
+    "145159",
+    "164951",
+    "73791",
+    "1795",
+    "156089",
+    "90499",
+    "14109",
+    "164511",
+    "154649",
+    "121067",
+    "79885",
+    "133837",
+    "7227",
+    "28333",
+    "78829",
+    "9969",
+    "108179",
+    "98627",
+    "110153",
+    "861",
+    "3321",
+    "130723",
+    "131491",
+    "7969",
+    "130435",
+    "132879",
+    "14509",
+    "21063",
+    "12047",
+    "81137",
+    "157235",
+    "23685",
+    "149843",
+    "41513",
+    "150049",
+    "81117",
+    "43827",
+    "74941",
+    "165991",
+    "163533",
+    "5253",
+    "84009",
+    "100099",
+    "140001",
+    "75715",
+    "75207",
+    "160989",
+    "114733",
+    "147785",
+    "160563",
+    "93325",
+    "59901",
+    "71181",
+    "131241",
+    "164503",
+    "125409",
+    "156051",
+    "88353",
+    "166819",
+    "95389",
+    "7839",
+    "31251",
+    "83553",
+    "140905",
+    "116653",
+    "153237",
+    "5017",
+    "153843",
+    "98555",
+    "119575",
+    "82155",
+    "99985",
+    "126265",
+    "105359",
+    "125177",
+    "149423",
+    "28937",
+    "84759",
+    "106875",
+    "153519",
+    "131467",
+    "44927",
+    "53539",
+    "162909",
+    "54173",
+    "39519",
+    "151705",
+    "52555",
+    "141457",
+    "119973",
+    "51593",
+    "85317",
+    "128055",
+    "150713",
+    "111305",
+    "107531",
+    "69659",
+    "2457",
+    "10477",
+    "71273",
+    "72605",
+    "141685",
+    "147383",
+    "58967",
+    "163627",
+    "158617",
+    "99169",
+    "83881",
+    "165393",
+    "149147",
+    "140145",
+    "121553",
+    "65357",
+    "91063",
+    "148353",
+    "80705",
+    "160735",
+    "43315",
+    "83877",
+    "37181",
+    "156477",
+    "138265",
+    "8385",
+    "142769",
+    "23207",
+    "162641",
+    "48135",
+    "126931",
+    "150999",
+    "134117",
+    "142895",
+    "94455",
+    "124759",
+    "51829",
+    "132973",
+    "138861",
+    "77127",
+    "18695",
+    "41985",
+    "120127",
+    "46823",
+    "3575",
+    "157993"
+  ],
+  "excluded_cases": [
+    {
+      "source_query_id": "46443",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "31023",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "106019",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "62115",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "75255",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6581",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "74945",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "108881",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "36949",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "130171",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "32865",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "99449",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "104693",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "157599",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125159",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "7995",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "12451",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "36675",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "58105",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "95261",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148839",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "82525",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "112223",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "76695",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "55473",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "96743",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "117743",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "156039",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "167919",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "20917",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "124005",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148877",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "112701",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125179",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "47573",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "80247",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "84261",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35883",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "84151",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "114759",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "142041",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "24829",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66737",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "58981",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67903",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "3271",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "79475",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39859",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "92843",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "50957",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "88511",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "142213",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "96989",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97793",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "124485",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "23383",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "101793",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "80989",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "121463",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "87993",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "52157",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "28233",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "120507",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "85247",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "122125",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25227",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "14555",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "40485",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "150563",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "81057",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "68635",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "103009",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "79133",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67299",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "86363",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69335",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "104879",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "42575",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "42081",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "10515",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "68901",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "164975",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "40777",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "163345",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "44925",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "31453",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "101633",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "127739",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "20187",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "136297",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35323",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "85267",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "11647",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "75383",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39673",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "150245",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "85891",
+      "reason": "train.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "152363",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "163183",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45965",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "152393",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "15623",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "54357",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "24783",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "70451",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "127257",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "144273",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153233",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "8865",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "44877",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45419",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "13259",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "130091",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "15361",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "27717",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "52033",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "27887",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125163",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "60133",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "141985",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "41881",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "86363",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "50995",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69913",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6485",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "76041",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6161",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "138583",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "115679",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "84901",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "131773",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6269",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "137145",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "51593",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66333",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "2449",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45713",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97139",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "107695",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "114707",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "127727",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "86151",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "159121",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35959",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "42643",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97507",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "132299",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "134499",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "138197",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "160381",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153745",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "105901",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "26543",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39519",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "47577",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "102303",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "3287",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "109999",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "53933",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133777",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "19079",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "21269",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "119137",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "139301",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "145987",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "155367",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "126379",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39021",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "7485",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "120845",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "76143",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "126227",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "91129",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "90121",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "38087",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "138619",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "110091",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "78925",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "137271",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "47285",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "54693",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "56713",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35129",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37315",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66737",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97539",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153675",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "15927",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "10741",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "38005",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "115691",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "106395",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37299",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "128837",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "49007",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "52571",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "56569",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "30655",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "108871",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66445",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125911",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66975",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "143099",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "101515",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69737",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "149431",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "30601",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69085",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "8707",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "43487",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "136493",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "161301",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "95195",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "141363",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "47871",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "132445",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "94915",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "95957",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "57985",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "168001",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "98115",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39017",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153521",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "30729",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "121291",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "92547",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25847",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69361",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "8593",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37817",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9023",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "10261",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "17755",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "99969",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "165629",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "51487",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "80659",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "56587",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "88803",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67867",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35311",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "40983",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "162891",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "46507",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "122677",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "18071",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35675",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "164245",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "132819",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9967",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37101",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "15933",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "5253",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "101987",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "2903",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "3271",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "24367",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133179",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "95567",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "26479",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "22131",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133843",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133389",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "143605",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "19491",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6581",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "128353",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "72371",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "41135",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "30603",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9933",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "128623",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "165827",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "95225",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "160177",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "118853",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166353",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25139",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "60847",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9495",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "115545",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "96799",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "111851",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "3689",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66853",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166177",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45687",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "58225",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "90631",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "59843",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "110679",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "14477",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "103559",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "58697",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "147537",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "21063",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148479",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "31251",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "82001",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "40545",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "16105",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "72753",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "74067",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "165287",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "161081",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "99717",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "93395",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "30395",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "156997",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "6395",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "149953",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45371",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "44851",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "40089",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "56793",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "82359",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "19299",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67265",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "137459",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "134445",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "122125",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166129",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166937",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "89913",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133523",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67369",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "93351",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "106811",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153873",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166201",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "135649",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "140495",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "35781",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "163953",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "61391",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "38277",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "22473",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "117649",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "159041",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "59403",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "131751",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "124883",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67285",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "111571",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "85003",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "45039",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "104795",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25189",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "142839",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "162345",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "12531",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "147505",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "147467",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "140419",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148213",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "78217",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "127961",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "109315",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "62547",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "121463",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "146745",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "156765",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "41411",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "24461",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "88499",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "154995",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "55791",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "147115",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97213",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "118857",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "48459",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "70179",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "139629",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "151751",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "96595",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "133453",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "87997",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153515",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "86169",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "76487",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "39391",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "23805",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "124339",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25781",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "107001",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "43297",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "147883",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "16701",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "155881",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "23121",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "152509",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "94975",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37537",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "71559",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "65989",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "38343",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "105243",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "142913",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "201",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "69297",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "58775",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "80793",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "103923",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "50261",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "52329",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "163997",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "136239",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "54803",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "152691",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "67759",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "53141",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "61923",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "141717",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "165871",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "145171",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "146795",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166099",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "91707",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9531",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "32499",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "37767",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "54925",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "161119",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "146161",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166439",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "9899",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "19399",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "83115",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125717",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "86597",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "113337",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148273",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "105639",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125383",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "7623",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "166063",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "127751",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97827",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "93795",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "136787",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "122673",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "8653",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "48309",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "84061",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "128069",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125637",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "153947",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "88207",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "148451",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "29035",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "104259",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "68475",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "132713",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "96967",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "62749",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "81349",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "66067",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "143295",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "32573",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "146539",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "97405",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "72957",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "64927",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "107129",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "125197",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "13993",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "162869",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "140087",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "41395",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "20917",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "29783",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "109545",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "74829",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "110161",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "150025",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "111137",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "163159",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "25001",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "101683",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "146905",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "16795",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "158411",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "160171",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    },
+    {
+      "source_query_id": "15827",
+      "reason": "warmup.json: duplicate_or_excluded_question"
+    }
+  ],
+  "sources": [
+    {
+      "path": "/Users/w4ng/xquang/DSC_Legal/QA/train.json",
+      "sha256": "2a52501cc065d266f2f832475950bcf1e7c75c386efa9b2f568f251d745f5988",
+      "selected_count": 200,
+      "source_row_count": 7000
+    },
+    {
+      "path": "/Users/w4ng/xquang/DSC_Legal/QA/warmup.json",
+      "sha256": "b824e4f18bd9181c021498a28e402b7374d6d559f2ff28caa4120a9d932f82c5",
+      "selected_count": 50,
+      "source_row_count": 500
+    }
+  ],
+  "slice_counts": {
+    "qa_reference": 250,
+    "slice:standard": 93,
+    "topic:administrative_other": 46,
+    "source:train": 200,
+    "slice:multi_reference": 93,
+    "topic:transport": 21,
+    "slice:temporal": 64,
+    "topic:criminal_procedure": 26,
+    "topic:land_housing": 27,
+    "topic:business_tax": 36,
+    "topic:family_civil": 28,
+    "topic:education_health": 31,
+    "topic:labor": 35,
+    "source:warmup": 50
+  },
+  "cases_sha256": "cee65972a3a3a10c9897b27ea3522bbb0e60f7576086390254b1b6430417956d"
+}

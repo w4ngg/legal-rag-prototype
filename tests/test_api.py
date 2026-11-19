@@ -255,6 +255,10 @@ def test_request_completion_log_is_structured_and_correlated(
     assert "reranker_ms" in event
     assert "context_builder_ms" in event
     assert "llm_ms" in event
+    serialized = json.dumps(event, ensure_ascii=False)
+    assert "Một câu hỏi" not in serialized
+    assert "Câu trả lời" not in serialized
+    assert "test-secret" not in serialized
 
 
 def test_request_completion_log_is_emitted_only_for_chat(caplog) -> None:

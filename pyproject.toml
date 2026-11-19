@@ -36,6 +36,7 @@ ingestion = [
 legal-ir-smoke = "legal_ir_prototype.cli:main"
 legal-rag-smoke = "legal_ir_prototype.rag_cli:main"
 legal-rag-api = "legal_ir_prototype.api.app:main"
+legal-rag-eval = "legal_ir_prototype.evaluation.cli:main"
 legal-ir-ingest = "legal_ir_prototype.ingestion.cli:main"
 
 [tool.setuptools.packages.find]

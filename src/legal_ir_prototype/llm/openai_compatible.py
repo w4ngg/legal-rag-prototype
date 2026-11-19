@@ -2,8 +2,7 @@ from __future__ import annotations
 
 """OpenAI Chat Completions compatible structured-output client."""
 
-import asyncio
-from typing import Any
+from typing import Any, Callable, Mapping
 
 import httpx
 from pydantic import BaseModel, ConfigDict, ValidationError
@@ -14,9 +13,9 @@ from .errors import (
     LLMConfigurationError,
     LLMRefusalError,
     LLMResponseError,
-    LLMTransportError,
 )
 from .schemas import parse_structured_output, structured_output_json_schema
+from .transport import RetryPolicy, RetryingHTTPTransport
 
 
 class _Message(BaseModel):
@@ -56,6 +55,8 @@ class OpenAICompatibleLLMClient:
         config: LLMConfig,
         *,
         http_client: httpx.AsyncClient | None = None,
+        retry_policy: RetryPolicy | None = None,
+        attempt_observer: Callable[[Mapping[str, Any]], None] | None = None,
     ) -> None:
         if config.provider != "openai_compatible":
             raise LLMConfigurationError(
@@ -75,6 +76,11 @@ class OpenAICompatibleLLMClient:
             self.headers["Authorization"] = f"Bearer {api_key}"
         self._client = http_client or httpx.AsyncClient()
         self._owns_client = http_client is None
+        self._transport = RetryingHTTPTransport(
+            retry_policy or RetryPolicy(max_retries=config.max_retries,
+                                       budget_seconds=max(300, config.timeout_seconds * (config.max_retries + 1))),
+            observer=attempt_observer,
+        )
 
     @property
     def model(self) -> str:
@@ -119,36 +125,10 @@ class OpenAICompatibleLLMClient:
         }
 
     async def _post(self, payload: dict[str, Any]) -> httpx.Response:
-        attempts = self.config.max_retries + 1
-        for attempt in range(attempts):
-            try:
-                response = await self._client.post(
-                    self.endpoint,
-                    headers=self.headers,
-                    json=payload,
-                    timeout=self.config.timeout_seconds,
-                )
-            except httpx.TransportError as exc:
-                if attempt + 1 >= attempts:
-                    raise LLMTransportError(
-                        f"LLM request failed after {attempts} attempt(s): {exc}"
-                    ) from exc
-                await asyncio.sleep(min(2**attempt, 8))
-                continue
-            if response.status_code == 429 or response.status_code >= 500:
-                if attempt + 1 < attempts:
-                    await asyncio.sleep(min(2**attempt, 8))
-                    continue
-            try:
-                response.raise_for_status()
-            except httpx.HTTPStatusError as exc:
-                response_preview = response.text[:500]
-                raise LLMTransportError(
-                    f"LLM endpoint returned HTTP {response.status_code}: "
-                    f"{response_preview}"
-                ) from exc
-            return response
-        raise AssertionError("unreachable LLM retry state")
+        return await self._transport.post(
+            self._client, self.endpoint, headers=self.headers, payload=payload,
+            timeout_seconds=self.config.timeout_seconds,
+        )
 
     async def generate(
         self,

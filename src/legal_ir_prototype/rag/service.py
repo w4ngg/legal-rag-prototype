@@ -10,7 +10,7 @@ from types import MappingProxyType
 from collections.abc import Callable
 from typing import Mapping, Protocol, Sequence
 
-from ..domain import BuiltContext, LegalChunk, RAGResponse
+from ..domain import BuiltContext, LegalChunk, LLMAnswer, RAGResponse
 from ..llm import LLMClient
 from .abstention import EvidenceChecker, EvidenceDecision
 from .citation import CitationValidator
@@ -29,8 +29,10 @@ class RAGExecution:
     """One RAG result plus opt-in debug values produced by the same run."""
 
     response: RAGResponse
+    retrieved_chunks: tuple[LegalChunk, ...]
     context: BuiltContext
     prompt: LLMPrompt | None
+    llm_answer: LLMAnswer | None
     timings_seconds: Mapping[str, float]
 
     def __post_init__(self) -> None:
@@ -43,6 +45,7 @@ class RAGExecution:
             for stage, duration in timings.items()
         ):
             raise ValueError("RAG timings must be finite non-negative values")
+        object.__setattr__(self, "retrieved_chunks", tuple(self.retrieved_chunks))
         object.__setattr__(self, "timings_seconds", MappingProxyType(timings))
 
 
@@ -137,8 +140,10 @@ class RAGService:
                     model=self.llm_client.model,
                     decision=context_decision,
                 ),
+                retrieved_chunks=chunks,
                 context=context,
                 prompt=None,
+                llm_answer=None,
                 timings_seconds=timings,
             )
 
@@ -175,8 +180,10 @@ class RAGService:
                     model=llm_answer.model,
                     decision=answer_decision,
                 ),
+                retrieved_chunks=chunks,
                 context=context,
                 prompt=prompt,
+                llm_answer=llm_answer,
                 timings_seconds=timings,
             )
 
@@ -187,8 +194,10 @@ class RAGService:
                 citations=citation_result.citations,
                 model=llm_answer.model,
             ),
+            retrieved_chunks=chunks,
             context=context,
             prompt=prompt,
+            llm_answer=llm_answer,
             timings_seconds=timings,
         )
 
